@@ -1,49 +1,41 @@
 package andres.learning.marketplace.user.controller;
 
 import andres.learning.marketplace.user.model.ResponseUser;
-import andres.learning.marketplace.user.service.DataProcessing;
+import andres.learning.marketplace.user.service.ClientAuthenticationService;
+import andres.learning.marketplace.user.service.ClientCredentials;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.IOException;
-import java.sql.SQLException;
 
 @WebServlet(name = "Login", value = "/Login")
 public class Login extends HttpServlet {
-    @Resource(name = "jdbc/clients")
+
+    @Resource(name = "jdbc/marketplace")
     DataSource connectionPool;
-    DataProcessing model;
+    ClientAuthenticationService service;
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
-        response.setContentType("text/plain");
-        response.getWriter().println("HELLO FROM LOGIN CONTROLLER");
+        request.getRequestDispatcher("Login.html").forward(request, response);
     }
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (Controller.checkValidUser(request, response)) {
-            response.sendRedirect("App"); //It's a client approach to forward
-            //request.getRequestDispatcher("App").forward(request, response);
-        } else {
-            model = new DataProcessing(connectionPool);
-            ResponseUser userToLogin = loginUser(request, response);
-            if (!(userToLogin == null)) {
-                Cookie validUser = new Cookie("valid.user", "VALID");
-                validUser.setMaxAge(600);
-                response.addCookie(validUser);
-                response.sendRedirect("App");
-            } else {
-                response.sendRedirect("Signup.html");
-            }
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
+        service = new ClientAuthenticationService(connectionPool);
+        ResponseUser userToLogin = loginUser(request, response);
+        if (userToLogin != null) {
+            response.addCookie(ClientCredentials.createClientCredentials(userToLogin));
+            response.sendRedirect("App");
+        } else {
+            response.sendRedirect("Signup.html");
         }
     }
 
@@ -53,8 +45,8 @@ public class Login extends HttpServlet {
         String password = request.getParameter("password");
         ResponseUser userToLogin = null;
         try {
-            userToLogin = model.userLogin(username, password);
-        } catch (SQLException e) {
+            userToLogin = service.userLogin(username, password);
+        } catch (Exception e) {
         }
         return userToLogin;
     }

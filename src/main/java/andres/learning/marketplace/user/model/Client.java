@@ -1,6 +1,6 @@
 package andres.learning.marketplace.user.model;
 
-public class User {
+public class Client {
     private int id;
     private String name;
     private String lastName;
@@ -9,7 +9,7 @@ public class User {
     private String username;
     private String password;
 
-    public User() {
+    public Client() {
 
     }
 
@@ -18,10 +18,10 @@ public class User {
      *      *Read
      *      *Update
      *      *Delete
-     * Because to this operations is necessarily have the id of the User
+     * Because to these operations is necessarily have User id
      */
 
-    public User(int id, String name, String lastName, String address, String email, String userName, String password) {
+    public Client(int id, String name, String lastName, String address, String email, String userName, String password) {
         this.id = id;
         this.name = name;
         this.lastName = lastName;
@@ -35,10 +35,10 @@ public class User {
     /**
      * This constructor is used when the app will do a:
      *      *Create
-     * Because to this operations is not necessarily have the id of the User
+     * Because to this operation is not necessarily have User id
      */
 
-    public User(String name, String lastName, String address, String email, String userName, String password) {
+    public Client(String name, String lastName, String address, String email, String userName, String password) {
         this.name = name;
         this.lastName = lastName;
         this.address = address;
@@ -124,6 +124,16 @@ public class User {
                 ", email='" + email + '\'' +
                 ", username='" + username + '\'' +
                 '}';
+    }
+
+
+    public boolean validClient(){
+        boolean valid = false;
+        if(this.name !=null&&  this.lastName !=null&&  this.address !=null
+                && this.email !=null&&  this.username !=null&&  this.password!=null){
+            valid=true;
+        }
+        return valid;
     }
 
 

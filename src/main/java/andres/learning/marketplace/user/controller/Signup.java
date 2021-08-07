@@ -1,7 +1,8 @@
 package andres.learning.marketplace.user.controller;
 
 import andres.learning.marketplace.user.model.ResponseUser;
-import andres.learning.marketplace.user.service.DataProcessing;
+import andres.learning.marketplace.user.service.ClientAuthenticationService;
+import andres.learning.marketplace.user.service.ClientCredentials;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -17,24 +18,33 @@ import java.io.UnsupportedEncodingException;
 @WebServlet(name = "SignUp", value = "/SignUp")
 public class Signup extends HttpServlet {
 
-    @Resource(name = "jdbc/clients")
+    @Resource(name = "jdbc/marketplace")
     DataSource connectionPool;
-    DataProcessing model;
+    ClientAuthenticationService service;
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
+        request.getRequestDispatcher("Signup.html").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        model = new DataProcessing(connectionPool);
-        PrintWriter output = response.getWriter();
-        output.println(SignupUser(request, response));
+        service = new ClientAuthenticationService(connectionPool);
+        boolean createdUser = SignupUser(request, response);
+        if (createdUser) {
+            response.sendRedirect("App");
+        } else {
+            PrintWriter output = response.getWriter();
+            response.setContentType("text/html");
+            output.println("Has occurred an error");
+            output.println("<h2><a href=\"Signup.html\">Try again</a></h2>");
+        }
     }
 
-    private ResponseUser SignupUser(HttpServletRequest request, HttpServletResponse response) {
+    private boolean SignupUser(HttpServletRequest request, HttpServletResponse response) {
 
+        boolean createdUser = false;
         ResponseUser userResponse = null;
         try {
             request.setCharacterEncoding("UTF-8");
@@ -49,12 +59,15 @@ public class Signup extends HttpServlet {
             String username = request.getParameter("username");
             request.setCharacterEncoding("UTF-8");
             String password = request.getParameter("password");
-
-            userResponse = model.createClient(name, lastName, address, email, username, password);
-            System.out.println(userResponse);
+            userResponse = service.createClient(name, lastName, address, email, username, password);
+            if (userResponse != null) {
+                ClientCredentials.createClientCredentials(userResponse);
+                System.out.println("USERRESPONSECONTROLLER: " + userResponse);
+                createdUser = true;
+            }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        return userResponse;
+        return createdUser;
     }
 }

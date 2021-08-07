@@ -1,37 +1,40 @@
 package andres.learning.marketplace.user.service;
 
-import andres.learning.marketplace.user.database.Connection;
+import andres.learning.marketplace.user.database.ClientAuthenticationDatabase;
 import andres.learning.marketplace.user.model.ResponseUser;
-import andres.learning.marketplace.user.model.User;
+import andres.learning.marketplace.user.model.Client;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class DataProcessing {
+public class ClientAuthenticationService {
 
-    Connection connection;
+    ClientAuthenticationDatabase database;
 
-    public DataProcessing(DataSource connectionPool) {
-        connection = new Connection(connectionPool);
+    public ClientAuthenticationService(DataSource connectionPool) {
+
+        database = new ClientAuthenticationDatabase(connectionPool);
     }
 
     public ResponseUser createClient(String name, String lastName, String address, String email,
                                      String username, String password) {
-        //User newUser = new User(name, lastName, userName, password, country, technology);
-        ResultSet newUser = connection.createUser(name, lastName, address, email, username, password);
-        ResponseUser foundUserResponse = null;
-        try {
-            newUser.beforeFirst();
-            foundUserResponse = responseUserObject(newUser);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        Client client = new Client(name, lastName, address, email, username,password);
+        ResponseUser foundClientResponse = null;
+        if(client.validClient()) {
+            ResultSet newClient = database.createUser(name, lastName, address, email, username, password);
+            try {
+                newClient.beforeFirst();
+                foundClientResponse = responseUserObject(newClient);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-        return foundUserResponse;
+        return foundClientResponse;
     }
 
     public ResponseUser userLogin(String username, String password) throws SQLException {
-        ResultSet userDbData = connection.userLogin(username, password);
+        ResultSet userDbData = database.userLogin(username, password);
         ResponseUser foundUserResponse = null;
         if (userDbData.next()) {
             System.out.println(userDbData.getString("userName"));
@@ -56,8 +59,8 @@ public class DataProcessing {
                 String password = resultSet.getString(5);
                 String country = resultSet.getString(6);
                 String technology = resultSet.getString(7);
-                User foundUserById = new User(userId, name, lastName, userName, password, country, technology);
-                foundUserResponse = new ResponseUser(foundUserById);
+                Client foundClientById = new Client(userId, name, lastName, userName, password, country, technology);
+                foundUserResponse = new ResponseUser(foundClientById);
             }
         } catch (SQLException e) {
             e.printStackTrace();

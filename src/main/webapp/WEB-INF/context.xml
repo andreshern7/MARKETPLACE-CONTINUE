@@ -1,5 +1,5 @@
 <Context>
-    <Resource name="jdbc/clients"
+    <Resource name="jdbc/marketplace"
               auth="Container"
               type="javax.sql.DataSource"
               driverClassName="com.mysql.cj.jdbc.Driver"

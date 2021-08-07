@@ -1,18 +1,21 @@
 package andres.learning.marketplace.user.database;
 
+import andres.learning.marketplace.products.model.Product;
+import andres.learning.marketplace.user.model.Client;
+import andres.learning.marketplace.user.model.ResponseUser;
+import andres.learning.marketplace.utilities.Connection;
+
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-public class Connection {
+public class ClientAuthenticationDatabase {
 
-    private java.sql.Connection connection;
-
-    public Connection(DataSource connectionPool) {
-        try {
-            connection = connectionPool.getConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    java.sql.Connection connection;
+    public ClientAuthenticationDatabase(DataSource connectionPool){
+        connection = Connection.getConnection(connectionPool);
     }
 
     public ResultSet getById(int id) throws SQLException {
@@ -61,7 +64,7 @@ public class Connection {
             preparedStatement.setString(7, password);
             preparedStatement.execute();
             result = getById(lastClientId());
-            System.out.println("createUser: CLIENT INSERTED SUCCESSFULLY");
+            System.out.println("CREATE USER DATABASE: CLIENT INSERTED SUCCESSFULLY");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -84,4 +87,6 @@ public class Connection {
         }
         return result;
     }
+
+
 }

@@ -24,12 +24,12 @@ public class ResponseUser {
         this.technology = user.getTechnology();
     }*/
 
-    public ResponseUser(User user) {
-        this.name = user.getName();
-        this.lastName = user.getLastName();
-        this.address = user.getAddress();
-        this.email = user.getEmail();
-        this.username = user.getUsername();
+    public ResponseUser(Client client) {
+        this.name = client.getName();
+        this.lastName = client.getLastName();
+        this.address = client.getAddress();
+        this.email = client.getEmail();
+        this.username = client.getUsername();
 
     }
 

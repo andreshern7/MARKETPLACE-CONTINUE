@@ -1,11 +1,8 @@
-package andres.learning.marketplace.user.controller;
+package andres.learning.marketplace.app.controller;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -13,14 +10,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-
 @WebServlet(name = "Controller", value = "/Controller")
 public class Controller extends HttpServlet {
-    /*I noticed that the pool have to be inside a Servlet
-    When I try to create inside a  JAVA normal class, it does not work
-    @Resource(name = "jdbc/users")
-    DataSource connectionPool;*/
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
@@ -38,10 +29,10 @@ public class Controller extends HttpServlet {
             ResultSet result=preparedStatement.executeQuery();
             if(result.next()){
                 output.println("<h1>PRODUCT</h1>");
-                String productName = result.getString("productName");
+                String productName = result.getString("name");
+                String picturePath = result.getString("photoFileName");
                 String description = result.getString("description");
                 String price = result.getString("price");
-                String picturePath = result.getString("fileName");
 
                 output.println("<h3>"+productName+"</h3>");
                 output.println("<image src='pictures/"+picturePath+"' width=150 />");
@@ -56,26 +47,6 @@ public class Controller extends HttpServlet {
         }
 
         output.println("</body></html>");
-
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-    }
-
-    public static boolean checkValidUser(HttpServletRequest request, HttpServletResponse response) {
-        Cookie[] requestCookies = request.getCookies();
-        boolean validUser = false;
-        if (!(requestCookies == null)) {
-            for (Cookie cookie : requestCookies) {
-                if (cookie.getName().equals("valid.user")) {
-                    if (cookie.getValue().equals("VALID")) {
-                        validUser = true;
-                    }
-                }
-            }
-        }
-        return validUser;
-    }
 }
