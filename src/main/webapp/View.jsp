@@ -18,12 +18,12 @@
                 int price = product.getPrice();
         %>
                 <h1><%=productName%></h1>
-                <image src="pictures/<%=picturePath%>" width=150/>
+                <image src="pictures/<%=picturePath%>" width="150"/>
                 <p>DESCRIPTION: <%=description%></p>
                 <p>Price: <%=price%></p>
-                    <form action="Controller">
+                    <form action="Product">
                         <input type="hidden" name="product" value="<%=product.getId()%>"/>
-                        <input type="submit" name="button" value="Go to order😁😁"/>
+                        <input type="submit" value="Go to order😁😁"/>
                     </form>
         <%    }%>
 

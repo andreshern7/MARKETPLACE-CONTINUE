@@ -27,7 +27,7 @@ public class App extends HttpServlet {
             ArrayList<Product> productList = service.allProducts();
             System.out.println("APP CONTROLLER: "+productList);
             request.setAttribute("products", productList);
-            request.getRequestDispatcher("/appView.jsp").forward(request, response); //Always put / before url destination
+            request.getRequestDispatcher("/View.jsp").forward(request, response); //Always put / before url destination
         } else {
             response.sendRedirect("Login.html");
         }

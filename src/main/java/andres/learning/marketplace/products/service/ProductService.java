@@ -33,5 +33,15 @@ public class ProductService {
         return productList;
     }
 
+    public Product getById(int id){
+        Product product = null;
+        try {
+             product = database.getById(id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return product;
+    }
+
 
 }
