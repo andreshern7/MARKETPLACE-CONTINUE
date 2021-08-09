@@ -24,12 +24,11 @@ public class ProductService {
         for (int i = 1; i <= amountProducts; i++) {
             try {
                 productList.add(database.getById(i));
-                System.out.println("ALL PRODUCTS SERVICE: "+productList);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-
+        System.out.println("ALL PRODUCTS SERVICE: "+productList);
         return productList;
     }
 

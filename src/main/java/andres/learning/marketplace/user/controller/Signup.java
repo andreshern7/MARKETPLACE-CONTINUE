@@ -1,6 +1,6 @@
 package andres.learning.marketplace.user.controller;
 
-import andres.learning.marketplace.user.model.ResponseUser;
+import andres.learning.marketplace.user.model.Client;
 import andres.learning.marketplace.user.service.ClientAuthenticationService;
 import andres.learning.marketplace.user.service.ClientCredentials;
 
@@ -32,6 +32,8 @@ public class Signup extends HttpServlet {
             throws ServletException, IOException {
         service = new ClientAuthenticationService(connectionPool);
         boolean createdUser = SignupUser(request, response);
+        System.out.println("SIGNUP CONTROLLER POST: "+createdUser);
+        System.out.println("SIGNUP CONTROLLER POST: "+ClientCredentials.checkClientAuthentication(request));
         if (createdUser) {
             response.sendRedirect("App");
         } else {
@@ -45,7 +47,7 @@ public class Signup extends HttpServlet {
     private boolean SignupUser(HttpServletRequest request, HttpServletResponse response) {
 
         boolean createdUser = false;
-        ResponseUser userResponse = null;
+        Client client = null;
         try {
             request.setCharacterEncoding("UTF-8");
             String name = request.getParameter("name");
@@ -59,10 +61,11 @@ public class Signup extends HttpServlet {
             String username = request.getParameter("username");
             request.setCharacterEncoding("UTF-8");
             String password = request.getParameter("password");
-            userResponse = service.createClient(name, lastName, address, email, username, password);
-            if (userResponse != null) {
-                ClientCredentials.createClientCredentials(userResponse);
-                System.out.println("USERRESPONSECONTROLLER: " + userResponse);
+            client = service.createClient(name, lastName, address, email, username, password);
+            if (client != null) {
+                response.addCookie(ClientCredentials.clientCookieValidation(client));
+                ClientCredentials.clientSessionData(client, request);
+                System.out.println("SIGNUP CONTROLLER: " + client);
                 createdUser = true;
             }
         } catch (UnsupportedEncodingException e) {

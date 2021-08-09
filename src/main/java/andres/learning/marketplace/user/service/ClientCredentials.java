@@ -1,19 +1,8 @@
 package andres.learning.marketplace.user.service;
 
-import andres.learning.marketplace.user.model.ResponseUser;
+import andres.learning.marketplace.user.model.Client;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import javax.servlet.http.*;
 
 
 public class ClientCredentials extends HttpServlet {
@@ -23,14 +12,21 @@ public class ClientCredentials extends HttpServlet {
     DataSource connectionPool;*/
 
 
-    public static Cookie createClientCredentials(ResponseUser clientToVerify){
+    public static Cookie clientCookieValidation(Client clientToVerify){
         Cookie validUser =null;
         if (!(clientToVerify == null)) {
             validUser = new Cookie("valid.user", "VALID");
-            validUser.setMaxAge(600);
+            validUser.setMaxAge(600);  //It cookie last ten minutes
         }
         return validUser;
     }
+
+    public static HttpSession clientSessionData(Client clientToVerify, HttpServletRequest request){
+        HttpSession session = request.getSession(true);
+        session.setAttribute("clientData", clientToVerify);
+        return session;
+    }
+
 
     public static boolean checkClientAuthentication(HttpServletRequest request) {
         Cookie[] requestCookies = request.getCookies();

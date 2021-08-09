@@ -1,6 +1,6 @@
 package andres.learning.marketplace.user.model;
 
-public class ResponseUser {
+public class ResponseClient {
 
     private int id;
     private String name;
@@ -10,11 +10,11 @@ public class ResponseUser {
     private String username;
     private String password;
 
-    public ResponseUser() {
+    public ResponseClient() {
 
     }
 
-    /*public ResponseUser(User user) {
+    /*public ResponseUser(Client client) {
         this.id = user.getId();
         this.name = user.getName();
         this.lastName = user.getLastName();
@@ -24,7 +24,7 @@ public class ResponseUser {
         this.technology = user.getTechnology();
     }*/
 
-    public ResponseUser(Client client) {
+    public ResponseClient(Client client) {
         this.name = client.getName();
         this.lastName = client.getLastName();
         this.address = client.getAddress();
@@ -33,6 +33,9 @@ public class ResponseUser {
 
     }
 
+    public int getId() {
+        return id;
+    }
 
     @Override
     public String toString() {
@@ -44,5 +47,6 @@ public class ResponseUser {
                 ", username='" + username + '\'' +
                 '}';
     }
+
 }
 

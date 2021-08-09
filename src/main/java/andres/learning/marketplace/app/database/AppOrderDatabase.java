@@ -23,6 +23,7 @@ public class AppOrderDatabase {
             preparedStatement.setInt(1, 0);
             preparedStatement.setInt(2, clientId);
             preparedStatement.setInt(3, productId);
+            preparedStatement.execute();
             result = true;
         } catch (SQLException e) {
             e.printStackTrace();

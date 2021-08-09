@@ -1,7 +1,7 @@
 package andres.learning.marketplace.user.service;
 
 import andres.learning.marketplace.user.database.ClientAuthenticationDatabase;
-import andres.learning.marketplace.user.model.ResponseUser;
+
 import andres.learning.marketplace.user.model.Client;
 
 import javax.sql.DataSource;
@@ -17,38 +17,43 @@ public class ClientAuthenticationService {
         database = new ClientAuthenticationDatabase(connectionPool);
     }
 
-    public ResponseUser createClient(String name, String lastName, String address, String email,
-                                     String username, String password) {
+    public Client createClient(String name, String lastName, String address, String email,
+                               String username, String password) {
         Client client = new Client(name, lastName, address, email, username,password);
-        ResponseUser foundClientResponse = null;
         if(client.validClient()) {
             ResultSet newClient = database.createUser(name, lastName, address, email, username, password);
             try {
                 newClient.beforeFirst();
-                foundClientResponse = responseUserObject(newClient);
+                client = responseUserObject(newClient);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-        return foundClientResponse;
+        return client;
     }
 
-    public ResponseUser userLogin(String username, String password) throws SQLException {
+    public Client userLogin(String username, String password) throws SQLException {
         ResultSet userDbData = database.userLogin(username, password);
-        ResponseUser foundUserResponse = null;
+        Client foundClientResponse = null;
         if (userDbData.next()) {
-            System.out.println(userDbData.getString("userName"));
-            System.out.println(userDbData.getString("password"));
-            foundUserResponse = responseUserObject(userDbData);
-            System.out.println(foundUserResponse);
+            System.out.println("USERLOGIN CLIENT SERVICE: "+userDbData.getString("userName"));
+            System.out.println("USERLOGIN CLIENT SERVICE: "+userDbData.getString("password"));
+            foundClientResponse = responseUserObject(userDbData);
+            System.out.println(foundClientResponse);
         } else {
             throw new SQLException("Invalid User Data");
         }
-        return foundUserResponse;
+        return foundClientResponse;
     }
 
-    private ResponseUser responseUserObject(ResultSet resultSet) {
-        ResponseUser foundUserResponse = null;
+    /**
+     * Create a Client by the content of the resultset
+     * @param resultSet
+     * @return Client
+     */
+
+    private Client responseUserObject(ResultSet resultSet) {
+        Client foundClientResponse = null;
         try {
             resultSet.beforeFirst();
             if (resultSet.next()) {
@@ -59,12 +64,11 @@ public class ClientAuthenticationService {
                 String password = resultSet.getString(5);
                 String country = resultSet.getString(6);
                 String technology = resultSet.getString(7);
-                Client foundClientById = new Client(userId, name, lastName, userName, password, country, technology);
-                foundUserResponse = new ResponseUser(foundClientById);
+                foundClientResponse = new Client(userId, name, lastName, userName, password, country, technology);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return foundUserResponse;
+        return foundClientResponse;
     }
 }

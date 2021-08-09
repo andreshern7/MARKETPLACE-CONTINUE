@@ -95,13 +95,10 @@ public class Client {
         this.username = username;
     }
 
-    public String getPassword() {
+    /*public String getPassword() {
         return password;
-    }
+    }*/
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
 
     public String completeDataUser() {
@@ -136,6 +133,13 @@ public class Client {
         return valid;
     }
 
-
+    @Override
+    public String toString() {
+        return "Client{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
+    }
 }
 

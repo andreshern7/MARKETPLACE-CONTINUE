@@ -1,6 +1,6 @@
 package andres.learning.marketplace.user.controller;
 
-import andres.learning.marketplace.user.model.ResponseUser;
+import andres.learning.marketplace.user.model.Client;
 import andres.learning.marketplace.user.service.ClientAuthenticationService;
 import andres.learning.marketplace.user.service.ClientCredentials;
 
@@ -30,20 +30,21 @@ public class Login extends HttpServlet {
             throws ServletException, IOException {
 
         service = new ClientAuthenticationService(connectionPool);
-        ResponseUser userToLogin = loginUser(request, response);
+        Client userToLogin = loginUser(request, response);
         if (userToLogin != null) {
-            response.addCookie(ClientCredentials.createClientCredentials(userToLogin));
+            response.addCookie(ClientCredentials.clientCookieValidation(userToLogin));
+            ClientCredentials.clientSessionData(userToLogin, request);
             response.sendRedirect("App");
         } else {
             response.sendRedirect("Signup.html");
         }
     }
 
-    private ResponseUser loginUser(HttpServletRequest request, HttpServletResponse response) {
+    private Client loginUser(HttpServletRequest request, HttpServletResponse response) {
 
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        ResponseUser userToLogin = null;
+        Client userToLogin = null;
         try {
             userToLogin = service.userLogin(username, password);
         } catch (Exception e) {

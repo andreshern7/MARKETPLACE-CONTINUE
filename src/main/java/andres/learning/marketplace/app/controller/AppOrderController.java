@@ -3,6 +3,7 @@ package andres.learning.marketplace.app.controller;
 import andres.learning.marketplace.app.service.AppOrderService;
 import andres.learning.marketplace.products.model.Product;
 import andres.learning.marketplace.products.service.ProductService;
+import andres.learning.marketplace.user.model.Client;
 
 import javax.annotation.Resource;
 import javax.servlet.*;
@@ -17,7 +18,8 @@ public class AppOrderController extends HttpServlet {
     DataSource connectionPool;
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         ProductService service = new ProductService(connectionPool);
         int productId = Integer.parseInt(request.getParameter("product"));
@@ -30,7 +32,8 @@ public class AppOrderController extends HttpServlet {
             throws ServletException, IOException{
 
         AppOrderService service = new AppOrderService(connectionPool);
-        int clientId = 1;
+        Client client = (Client) request.getSession(true).getAttribute("clientData");
+        int clientId = client.getId();
         int productId = Integer.parseInt(request.getParameter("productId"));
         Product orderedProduct = service.createOrder(clientId, productId);
         request.setAttribute("orderedProduct", orderedProduct);

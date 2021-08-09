@@ -1,8 +1,5 @@
 package andres.learning.marketplace.user.database;
 
-import andres.learning.marketplace.products.model.Product;
-import andres.learning.marketplace.user.model.Client;
-import andres.learning.marketplace.user.model.ResponseUser;
 import andres.learning.marketplace.utilities.Connection;
 
 import javax.sql.DataSource;
@@ -80,7 +77,6 @@ public class ClientAuthenticationDatabase {
                     ResultSet.CONCUR_UPDATABLE);
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);
-            System.out.println(preparedStatement);
             result = preparedStatement.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
