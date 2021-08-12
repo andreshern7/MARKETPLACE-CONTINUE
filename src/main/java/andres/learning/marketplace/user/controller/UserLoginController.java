@@ -14,11 +14,15 @@ import javax.sql.DataSource;
 import java.io.IOException;
 
 @WebServlet(name = "Login", value = "/Login")
-public class Login extends HttpServlet {
+public class UserLoginController extends HttpServlet {
 
     @Resource(name = "jdbc/marketplace")
     DataSource connectionPool;
+
     ClientAuthenticationService service;
+    public void init(){
+        service = new ClientAuthenticationService(connectionPool);
+    }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -29,18 +33,17 @@ public class Login extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        service = new ClientAuthenticationService(connectionPool);
-        Client userToLogin = loginUser(request, response);
+        Client userToLogin = loginUser(request);
         if (userToLogin != null) {
             response.addCookie(ClientCredentials.clientCookieValidation(userToLogin));
             ClientCredentials.clientSessionData(userToLogin, request);
             response.sendRedirect("App");
         } else {
-            response.sendRedirect("Signup.html");
+            response.sendRedirect("Login.html");
         }
     }
 
-    private Client loginUser(HttpServletRequest request, HttpServletResponse response) {
+    private Client loginUser(HttpServletRequest request) {
 
         String username = request.getParameter("username");
         String password = request.getParameter("password");

@@ -32,6 +32,7 @@ public class ProductDatabase {
         }else{
             resultProduct = createProductObject(result);
         }
+        preparedStatement.close();
         return resultProduct;
     }
 
@@ -50,8 +51,8 @@ public class ProductDatabase {
         return lastId;
     }
 
-    public Product insertProduct(String name, String lastName, String address,
-                                String email, String username, String password) {
+    public Product insertProduct(String name, String fileNamePath, String description,
+                                int price) {
 
         String query = "INSERT INTO products VALUES(?, ?, ?, ?, ?);";
         Product result = null;
@@ -59,18 +60,55 @@ public class ProductDatabase {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, null);
             preparedStatement.setString(2, name);
-            preparedStatement.setString(3, lastName);
-            preparedStatement.setString(4, address);
-            preparedStatement.setString(5, email);
+            preparedStatement.setString(3, fileNamePath);
+            preparedStatement.setString(4, description);
+            preparedStatement.setInt(5, price);
             preparedStatement.execute();
             result = getById(lastProductId());
             System.out.println("INSERT PRODUCT DATABASE: PRODUCT INSERTED SUCCESSFULLY");
+            preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return result;
     }
 
+    public Product deleteProduct(int id){
+        Product erasedProduct = null;
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM products WHERE productId=?");
+            preparedStatement.setInt(1, id);
+            erasedProduct = getById(id);
+            preparedStatement.execute();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return erasedProduct;
+    }
+
+
+    public Product editProduct(int id, String name, String productImageFile, String description, int price){
+        Product modifiedProduct = null;
+        try {
+            String query = "UPDATE products SET name=?, photoFileName=?, description=?, price=? WHERE (productId = ?);";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, productImageFile);
+            preparedStatement.setString(3, description);
+            preparedStatement.setInt(4, price);
+            preparedStatement.setInt(5, id);
+            System.out.println("PRODUCT DATABASE EDITPRODUCT: "+preparedStatement);
+            System.out.println("PRODUCT DATABASE EDITPRODUCT: "+getById(id));
+            preparedStatement.executeUpdate();
+            modifiedProduct = getById(id);
+            System.out.println("PRODUCT DATABASE EDITPRODUCT: "+modifiedProduct);
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return modifiedProduct;
+    }
 
     private Product createProductObject(ResultSet resultSet) {
         Product foundProduct = null;
@@ -83,17 +121,12 @@ public class ProductDatabase {
                 String description = resultSet.getString(4);
                 int price = resultSet.getInt(5);
                 foundProduct = new Product(productId, name, photoFileName, description, price);
-                /*
-                    private int id;
-                    private String name;
-                    private String photoFileName;
-                    private String description;
-                    private int price;
-                 */
             }
+            resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return foundProduct;
     }
+
 }

@@ -19,7 +19,7 @@ public class ProductService {
 
     public ArrayList<Product> allProducts(){
         int amountProducts = database.lastProductId();
-        System.out.println(amountProducts);
+        System.out.println("PRODUCT SERVICE AMOUNT PRODUCTS: "+amountProducts);
         ArrayList<Product> productList = new ArrayList<>();
         for (int i = 1; i <= amountProducts; i++) {
             try {
@@ -41,6 +41,5 @@ public class ProductService {
         }
         return product;
     }
-
 
 }

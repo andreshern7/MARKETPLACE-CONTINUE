@@ -16,11 +16,15 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
 @WebServlet(name = "SignUp", value = "/SignUp")
-public class Signup extends HttpServlet {
+public class UserSignupController extends HttpServlet {
 
     @Resource(name = "jdbc/marketplace")
     DataSource connectionPool;
+
     ClientAuthenticationService service;
+    public void init(){
+        service = new ClientAuthenticationService(connectionPool);
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -30,7 +34,6 @@ public class Signup extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        service = new ClientAuthenticationService(connectionPool);
         boolean createdUser = SignupUser(request, response);
         System.out.println("SIGNUP CONTROLLER POST: "+createdUser);
         System.out.println("SIGNUP CONTROLLER POST: "+ClientCredentials.checkClientAuthentication(request));

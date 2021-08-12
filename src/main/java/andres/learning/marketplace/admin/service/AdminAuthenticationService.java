@@ -1,47 +1,37 @@
-package andres.learning.marketplace.user.service;
+package andres.learning.marketplace.admin.service;
 
 import andres.learning.marketplace.user.database.ClientAuthenticationDatabase;
-
 import andres.learning.marketplace.user.model.Client;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ClientAuthenticationService {
+public class AdminAuthenticationService {
 
     ClientAuthenticationDatabase database;
 
-    public ClientAuthenticationService(DataSource connectionPool) {
+    public AdminAuthenticationService(DataSource connectionPool) {
 
         database = new ClientAuthenticationDatabase(connectionPool);
     }
 
-    public Client createClient(String name, String lastName, String address, String email,
-                               String username, String password) {
-        Client client = new Client(name, lastName, address, email, username,password);
-        if(client.validClient()) {
-            ResultSet newClient = database.createUser(name, lastName, address, email, username, password);
-            try {
-                newClient.beforeFirst();
-                client = responseClientObject(newClient);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return client;
-    }
+
 
     public Client userLogin(String username, String password) throws SQLException {
         ResultSet userDbData = database.userLogin(username, password);
         Client foundClientResponse = null;
         if (userDbData.next()) {
-            System.out.println("USERLOGIN CLIENT SERVICE USERNAME: "+userDbData.getString("userName"));
-            System.out.println("USERLOGIN CLIENT SERVICE PASSWORD: "+userDbData.getString("password"));
-            foundClientResponse = responseClientObject(userDbData);
-            System.out.println("USERLOGIN CLIENT SERVICE: "+foundClientResponse);
-        } else {
-            throw new SQLException("Invalid User Data");
+            String adminUsername = userDbData.getString("username");
+            String adminPassword = userDbData.getString("password");
+            System.out.println("ADMINLOGIN SERVICE USERNAME: "+adminUsername);
+            System.out.println("ADMINLOGIN SERVICE PASSWORD: "+adminPassword);
+            if(adminUsername.equals("andres") && adminPassword.equals("admin")){
+                foundClientResponse = responseUserObject(userDbData);
+                System.out.println("ADMINLOGIN SERVICE: "+foundClientResponse);
+            } else {
+                throw new SQLException("Invalid User Data");
+            }
         }
         return foundClientResponse;
     }
@@ -52,7 +42,7 @@ public class ClientAuthenticationService {
      * @return Client
      */
 
-    private Client responseClientObject(ResultSet resultSet) {
+    private Client responseUserObject(ResultSet resultSet) {
         Client foundClientResponse = null;
         try {
             resultSet.beforeFirst();

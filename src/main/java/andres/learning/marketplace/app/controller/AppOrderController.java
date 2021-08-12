@@ -17,13 +17,20 @@ public class AppOrderController extends HttpServlet {
     @Resource(name="jdbc/marketplace")
     DataSource connectionPool;
 
+    ProductService ProductService;
+    AppOrderService appService;
+    public void init(){
+        ProductService = new ProductService(connectionPool);
+        appService = new AppOrderService(connectionPool);
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        ProductService service = new ProductService(connectionPool);
+        ProductService = new ProductService(connectionPool);
         int productId = Integer.parseInt(request.getParameter("product"));
-        request.setAttribute("productById", service.getById(productId));
+        request.setAttribute("productById", ProductService.getById(productId));
         request.getRequestDispatcher("ProductView.jsp").forward(request, response);
 
     }
@@ -31,11 +38,10 @@ public class AppOrderController extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException{
 
-        AppOrderService service = new AppOrderService(connectionPool);
         Client client = (Client) request.getSession(true).getAttribute("clientData");
         int clientId = client.getId();
         int productId = Integer.parseInt(request.getParameter("productId"));
-        Product orderedProduct = service.createOrder(clientId, productId);
+        Product orderedProduct = appService.createOrder(clientId, productId);
         request.setAttribute("orderedProduct", orderedProduct);
         request.getRequestDispatcher("OrderView.jsp").forward(request, response);
     }

@@ -25,6 +25,7 @@ public class AppOrderDatabase {
             preparedStatement.setInt(3, productId);
             preparedStatement.execute();
             result = true;
+            preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -38,6 +38,8 @@ public class ClientAuthenticationDatabase {
             while(result.next()){
                 lastId = result.getInt(1);
             }
+            result.close();
+            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -62,6 +64,7 @@ public class ClientAuthenticationDatabase {
             preparedStatement.execute();
             result = getById(lastClientId());
             System.out.println("CREATE USER DATABASE: CLIENT INSERTED SUCCESSFULLY");
+            preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

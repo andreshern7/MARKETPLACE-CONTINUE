@@ -20,8 +20,6 @@
             for (Product product: allProducts) {
                 String productName = product.getName();
                 String picturePath = product.getPhotoFileName();
-                String description = product.getDescription();
-                int price = product.getPrice();
         %>
 
                 <h1><%=productName%></h1>
