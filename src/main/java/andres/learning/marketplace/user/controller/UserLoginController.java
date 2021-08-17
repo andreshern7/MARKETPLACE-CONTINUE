@@ -39,7 +39,7 @@ public class UserLoginController extends HttpServlet {
             ClientCredentials.clientSessionData(userToLogin, request);
             response.sendRedirect("App");
         } else {
-            response.sendRedirect("Login.html");
+            response.sendRedirect("Signup.html");
         }
     }
 

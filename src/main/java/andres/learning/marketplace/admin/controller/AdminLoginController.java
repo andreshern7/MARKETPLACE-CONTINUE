@@ -59,7 +59,7 @@ public class AdminLoginController extends HttpServlet {
         String password = request.getParameter("password");
         Client userToLogin = null;
         try {
-            userToLogin = service.userLogin(username, password);
+            userToLogin = service.adminLogin(username, password);
         } catch (Exception e) {
             e.printStackTrace();
         }

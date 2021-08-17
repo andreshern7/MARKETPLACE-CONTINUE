@@ -18,7 +18,7 @@ public class AdminAuthenticationService {
 
 
 
-    public Client userLogin(String username, String password) throws SQLException {
+    public Client adminLogin(String username, String password) throws SQLException {
         ResultSet userDbData = database.userLogin(username, password);
         Client foundClientResponse = null;
         if (userDbData.next()) {
@@ -26,7 +26,7 @@ public class AdminAuthenticationService {
             String adminPassword = userDbData.getString("password");
             System.out.println("ADMINLOGIN SERVICE USERNAME: "+adminUsername);
             System.out.println("ADMINLOGIN SERVICE PASSWORD: "+adminPassword);
-            if(adminUsername.equals("andres") && adminPassword.equals("admin")){
+            if(adminUsername.equals("jorgyp") && adminPassword.equals("admin")){
                 foundClientResponse = responseUserObject(userDbData);
                 System.out.println("ADMINLOGIN SERVICE: "+foundClientResponse);
             } else {
